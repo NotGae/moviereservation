@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+  <body>
+    <%- include('nav.ejs') %>
+    <h1><%= theaterName %>에서 상영중인 영화</h1>
+    <ul style="display: block">
+      <li><%= new Date() %></li>
+      <li><%= new Date().getDate() + 1 %></li>
+      <li><%= new Date().getDate() + 2 %></li>
+      <li><%= new Date().getDate() + 3 %></li>
+    </ul>
+    <ul id="screening_movie_container">
+      <% for(let i = 0; i < result.length; i++) { %>
+      <li>
+        <h3
+          class="screening_movie"
+          data-movieid="<%= result[i].movieId %>"
+          data-theaterid="<%= theaterId %>"
+        >
+          <%= result[i].title %>
+        </h3>
+        <p
+          data-hallId="<%= result[i].hallId %>"
+          data-theaterId="<%= theaterId %>"
+        >
+          관: <%= result[i].hallName %>
+        </p>
+        <p>시작일: <%= result[i].screeningDay %></p>
+        <p>시작시간: <%= result[i].startTime %></p>
+        <p>종료시간: <%= result[i].endTime %></p>
+      </li>
+      <%} %>
+    </ul>
+    <section class="movie_container">
+      <h3></h3>
+    </section>
+  </body>
+  <script>
+    document.querySelectorAll('.screening_movie').forEach((movie) => {
+      movie.addEventListener('click', (e) => {
+        console.log(e.target.dataset.theaterid);
+        document.querySelector('.movie_container');
+        // 이제 section에 누른 영화들 정보 DB에서 가져오고 예매하기에 screening_id 넣으면 될 듯.
+      });
+    });
+  </script>
+</html>

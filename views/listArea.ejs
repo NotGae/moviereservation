@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/main.css" />
+  </head>
+  <body>
+    <%- include('nav.ejs') %>
+    <main>
+      <ul>
+        <% for(let i = 0; i < province.length; i++) { %>
+        <li>
+          <section class="province_container">
+            <h4 class="province"><%= province[i].province %></h4>
+            <p class="theater_number"><%= province[i].theaterNumber %></p>
+          </section>
+        </li>
+        <% } %>
+      </ul>
+    </main>
+    <script>
+      document.querySelectorAll('.province_container').forEach((province) => {
+        province.addEventListener('click', (e) => {
+          let target = e.currentTarget;
+          let provinceName = target.childNodes[1].innerText;
+
+          fetch(`/get/city?provinceName=${provinceName}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          })
+            .then((r) => r.json())
+            .then((result) => {
+              if (document.querySelector('.city_container') !== null) {
+                document
+                  .querySelector('.city_container')
+                  .parentNode.parentNode.remove();
+              }
+              if (document.querySelector('.theater_container') !== null) {
+                document
+                  .querySelector('.theater_container')
+                  .parentNode.parentNode.remove();
+              }
+              let newUl = document.createElement('ul');
+              for (let i = 0; i < result.length; i++) {
+                newUl.insertAdjacentHTML(
+                  'beforeend',
+                  `
+                  <li>
+                  <section class="city_container">
+                  <h4 class="city"> ${result[i].city}</h4>
+                  <p class="theater_number"> ${result[i].theaterNumber}</p>
+                  </section>
+                  </li>
+                  `
+                );
+              }
+              document.querySelector('main').appendChild(newUl);
+            });
+        });
+      });
+      document.querySelector('main').addEventListener('click', (e) => {
+        const cityContainer = e.target.closest('.city_container');
+        if (cityContainer) {
+          const cityName = cityContainer.querySelector('.city').innerText;
+          fetch(`/get/theater?cityName=${cityName}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          })
+            .then((r) => r.json())
+            .then((result) => {
+              if (document.querySelector('.theater_container') !== null) {
+                document
+                  .querySelector('.theater_container')
+                  .parentNode.parentNode.remove();
+              }
+              let newUl = document.createElement('ul');
+              for (let i = 0; i < result.length; i++) {
+                newUl.insertAdjacentHTML(
+                  'beforeend',
+                  `
+                  <li>
+                  <section class="theater_container">
+                  <a href="/list/movie/${result[i].theaterId}" class="theater" data-id=${result[i].theaterId}> ${result[i].theaterName}</a>
+                  </section>
+                  </li>
+                  `
+                );
+              }
+              document.querySelector('main').appendChild(newUl);
+            });
+        }
+      });
+    </script>
+  </body>
+</html>

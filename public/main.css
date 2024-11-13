@@ -1,0 +1,64 @@
+#nav_ul li {
+  display: inline-block;
+  list-style-type: none;
+  font-size: 24px;
+  margin-right: 10px;
+}
+ul {
+  display: inline-block;
+  vertical-align: top;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  padding-right: 10px;
+}
+/* listArea.ejs css */
+.province_container,
+.city_container,
+.theater_container {
+  display: inline-block;
+  margin-bottom: 10px;
+  border: 1px solid black;
+  height: auto;
+  width: 80px;
+}
+.province_container:hover {
+  cursor: pointer;
+  background-color: lightblue;
+}
+.city_container:hover {
+  cursor: pointer;
+  background-color: lightcyan;
+}
+.province,
+.city,
+.theater,
+.theater_number {
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+/* listMovie.ejs */
+.screening_movie_container li {
+  border: 1px solid black;
+}
+/* listScreeningMovie.ejs css */
+.screening_movie {
+  border: 1px solid black;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  width: auto;
+}
+.about {
+  border: 1px solid black;
+  margin: 0;
+  width: 60px;
+  padding: 0;
+}
+.about:hover {
+  cursor: pointer;
+}
+.screening_movie:hover {
+  cursor: pointer;
+}
