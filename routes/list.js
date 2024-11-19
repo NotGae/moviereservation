@@ -17,8 +17,12 @@ router.get('/area', async (req, res) => {
 router.get('/movie', async (req, res) => {
   // 현재 상영중인 영화의 이름과 ID값. 이걸로 나중에 해당영화의 ID로 뭐 찾기하면 될듯.
   // 영화 이름, 개봉일 이런거 about에 보여줄거니까 추가해놓으셈.
+  // 여기서도 현재날짜 + 몇일까지 영화만 뽑기.
   const [rows] = await pool.query(
-    'SELECT DISTINCT b.movieId as movieId, b.title as title, b.synopsis as synopsis, DATE_FORMAT(b.releaseDate, "%Y년 %m월 %d일") as releaseDate, b.runningTime as runningTime FROM screeningmovies a JOIN movies b ON a.movieId = b.movieId;'
+    'SELECT DISTINCT b.movieId as movieId, b.title as title, b.synopsis as synopsis, ' +
+      'DATE_FORMAT(b.releaseDate, "%Y년 %m월 %d일") as releaseDate, b.runningTime as runningTime ' +
+      'FROM screeningmovies a JOIN movies b ON a.movieId = b.movieId ' +
+      'WHERE a.screeningDay BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY);'
   );
   let result = rows;
   res.render('listMovie.ejs', { result: result });
@@ -28,6 +32,7 @@ router.get('/movie', async (req, res) => {
 router.get('/movie/:a', async (req, res) => {
   // 현재 상영중인 영화의 이름과 ID값. 이걸로 나중에 해당영화의 ID로 뭐 찾기하면 될듯.
   // 근데 이제 movieId가 qeury string으로 들어왔을 때는 해당 movieId만 있는걸로 찾기.
+  // 근데 또! 현재 상영중인 영화 + 4일뒤까지 영화만 얻으면 되니까 WHERE절에 날짜 포함시키면 될듯.
   let q =
     'SELECT DISTINCT ' +
     'a.screeningMovieId as screeningId, b.title as title, b.movieId as movieId, DATE_FORMAT(a.screeningDay, "%Y년 %m월 %d일") as screeningDay, ' +
@@ -36,6 +41,7 @@ router.get('/movie/:a', async (req, res) => {
     'FROM screeningmovies a JOIN movies b ON a.movieId = b.movieId JOIN halls c on a.hallId = c.hallId and a.theaterId = c.theaterId ' +
     'WHERE a.theaterId = ' +
     req.params.a +
+    ' and a.screeningDay BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)' +
     ' and a.movieId';
   if (req.query.movieId) {
     q += ' = ' + req.query.movieId;
@@ -48,6 +54,7 @@ router.get('/movie/:a', async (req, res) => {
     'SELECT theaterName from theaters where theaterId = ' + req.params.a
   );
   let theaterName = rows2;
+
   res.render('listScreeningMovie.ejs', {
     result: result,
     theaterId: req.params.a,

@@ -42,7 +42,6 @@ ul {
 .screening_movie_container li {
   border: 1px solid black;
 }
-/* listScreeningMovie.ejs css */
 .screening_movie {
   border: 1px solid black;
   margin: 0;
@@ -61,4 +60,18 @@ ul {
 }
 .screening_movie:hover {
   cursor: pointer;
+}
+/* listScreeningMovie.ejs css */
+.movie_date li,
+.hall {
+  display: inline-block;
+  margin-right: 10px;
+  border: 1px solid black;
+}
+.hall {
+  padding: 10px;
+}
+.movie_date li:hover {
+  cursor: pointer;
+  background-color: aqua;
 }

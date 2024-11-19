@@ -8,7 +8,7 @@
   <body>
     <%- include('nav.ejs') %>
     <h1>고를 수 있는 영화들</h1>
-    <ul id="screening_movie_container">
+    <ul class="screening_movie_container">
       <% for(let i = 0; i < result.length; i++) { %>
       <li>
         <h3 class="screening_movie" data-movieid="<%= result[i].movieId %>">

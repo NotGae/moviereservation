@@ -9,45 +9,81 @@
   <body>
     <%- include('nav.ejs') %>
     <h1><%= theaterName %>에서 상영중인 영화</h1>
-    <ul style="display: block">
-      <li><%= new Date() %></li>
-      <li><%= new Date().getDate() + 1 %></li>
-      <li><%= new Date().getDate() + 2 %></li>
-      <li><%= new Date().getDate() + 3 %></li>
-    </ul>
-    <ul id="screening_movie_container">
+    <h2></h2>
+    <ul style="display: block" class="movie_date"></ul>
+
+    <ul classs="screening_movie_container">
       <% for(let i = 0; i < result.length; i++) { %>
-      <li>
-        <h3
-          class="screening_movie"
-          data-movieid="<%= result[i].movieId %>"
-          data-theaterid="<%= theaterId %>"
-        >
-          <%= result[i].title %>
-        </h3>
-        <p
-          data-hallId="<%= result[i].hallId %>"
-          data-theaterId="<%= theaterId %>"
-        >
-          관: <%= result[i].hallName %>
-        </p>
-        <p>시작일: <%= result[i].screeningDay %></p>
-        <p>시작시간: <%= result[i].startTime %></p>
-        <p>종료시간: <%= result[i].endTime %></p>
+      <li
+        class="screening_movie"
+        data-movieid="<%= result[i].movieId %>"
+        data-hallId="<%= result[i].hallId %>"
+        data-theaterId="<%= theaterId %>"
+        data-screeningDay="<%= result[i].screeningDay %>"
+        style="display: none"
+      >
+        <form action="/ticket" method="GET">
+          <h3><%= result[i].title %></h3>
+          <p>관: <%= result[i].hallName %></p>
+          <p>시작일: <%= result[i].screeningDay %></p>
+          <p>시작시간: <%= result[i].startTime %></p>
+          <p>종료시간: <%= result[i].endTime %></p>
+          <input
+            type="hidden"
+            name="screeningId"
+            value="<%= result[i].screeningId %>"
+          />
+          <button>예매하기</button>
+        </form>
       </li>
       <%} %>
     </ul>
-    <section class="movie_container">
-      <h3></h3>
-    </section>
   </body>
   <script>
-    document.querySelectorAll('.screening_movie').forEach((movie) => {
-      movie.addEventListener('click', (e) => {
-        console.log(e.target.dataset.theaterid);
-        document.querySelector('.movie_container');
-        // 이제 section에 누른 영화들 정보 DB에서 가져오고 예매하기에 screening_id 넣으면 될 듯.
+    let result = '<%- JSON.stringify(result) %>';
+    result = JSON.parse(result);
+
+    let currentDate = new Date();
+    let formatedDate = formatDate(currentDate);
+
+    for (let i = 0; i < 4; i++) {
+      document.querySelector('.movie_date').insertAdjacentHTML(
+        'beforeend',
+        `
+        <li>${formatedDate}</li>
+        `
+      );
+      currentDate.setDate(currentDate.getDate() + 1);
+      formatedDate = formatDate(currentDate);
+    }
+
+    document.querySelectorAll('.movie_date li').forEach((date) => {
+      date.addEventListener('click', (e) => {
+        let selectedDate = e.target.innerText;
+
+        let screeningMovies = document.querySelectorAll('.screening_movie');
+        for (let i = 0; i < screeningMovies.length; i++) {
+          if (screeningMovies[i].dataset.screeningday === selectedDate) {
+            screeningMovies[i].style.display = 'inline-block';
+          } else {
+            screeningMovies[i].style.display = 'none';
+          }
+        }
       });
     });
+
+    document.querySelectorAll('.screening_movie').forEach((movie) => {
+      movie.addEventListener('click', (e) => {
+        const target = e.currentTarget;
+      });
+    });
+
+    function formatDate(date) {
+      const year = date.getFullYear(); // 연도
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1 필요)
+      const day = String(date.getDate()).padStart(2, '0'); // 일
+
+      return `${year}년 ${month}월 ${day}일`;
+    }
   </script>
 </html>
