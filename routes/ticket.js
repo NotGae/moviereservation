@@ -32,6 +32,7 @@ router.get('/', async (req, res) => {
 router.post('/booking', async (req, res) => {
   console.log(req.body);
   //여기서 이제 거의 다 된듯
+  res.render('completeBooking.ejs');
 });
 
 module.exports = router;
