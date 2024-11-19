@@ -4,8 +4,75 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="/main.css" />
   </head>
   <body>
-    영화예매장소 영화 좌석쫘르르 보여주고 설정하는거 하면 될 듯.
+    <%- include('nav.ejs') %>
+    <ul class="seat_container">
+      <% let prevRowChar = ''; %> <% for(let i = 0; i < seats.length; i++) { %>
+      <% if (seats[i].rowChar !== prevRowChar) { %> <% if (i !== 0) { %>
+    </ul>
+    <% } %>
+    <li class="seat_row">
+      <ul class="seats">
+        <% prevRowChar = seats[i].rowChar; %> <% } %>
+        <li
+          class="seat"
+          data-checked="false"
+          data-seatid="<%= seats[i].seatId %>"
+          data-hallid="<%=seats[i].hallId %>"
+          data-theaterId="<%=seats[i].theaterId %>"
+        >
+          <%= seats[i].rowChar %><%= seats[i].colNumber %>
+        </li>
+        <% } %>
+      </ul>
+    </li>
+  </ul>
+  <form action="/ticket/booking" method="post" class="user_info">
+    <label for="phone_number">전화번호: </label><input type="text" name="phoneNumber" id="phone_number"> <br>
+    <label for="usr_pwd">비밀번호: </label><input type="text" name="pwd" id="usr_pwd"> <br>
+    <input type="hidden" style="display: none;" name="seats" id="seats_arr">
+    <button type="button" class="submit_btn">예약하기</button> <br>
+  </form>
   </body>
+  <script>
+    let seatsArr = []
+    let result = '<%- JSON.stringify(result) %>';
+    result = JSON.parse(result);
+    screeningMovie = result[0];
+
+    const maxNum = 4;
+
+    document.querySelectorAll('.seat').forEach((seat) => {
+      seat.addEventListener('click', (e) => {
+        const target = e.currentTarget;
+        const ticketId = target.dataset.seatid + target.dataset.hallid + target.dataset.theaterid + screeningMovie.screeningMovieId;
+        if(target.dataset.checked === 'false') {
+          if(maxNum === seatsArr.length) {
+            return;
+          }
+          target.dataset.checked = 'true';
+          target.style.backgroundColor = 'lightblue';
+          // 여기에 서버에서 Date.now()추가하면 될듯.
+          //이거 객체로 바꾸기.
+          seatsArr.push(ticketId);
+        } else {
+          target.dataset.checked = 'false';
+          target.style.backgroundColor = 'white';
+          seatsArr = seatsArr.filter(item => item !== ticketId);
+        }
+      })
+    })
+    document.querySelector('.submit_btn').addEventListener('click', (e) => {
+      if (seatsArr.length === 0) {
+        alert("좌석을 선택해주세요!");
+        return;
+      } else {
+        document.getElementById('seats_arr').value = JSON.stringify(seatsArr);
+      }
+
+      document.querySelector('.user_info').submit();
+    });
+  </script>
 </html>
