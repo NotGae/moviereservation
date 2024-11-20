@@ -51,7 +51,8 @@ router.get('/movie/:a', async (req, res) => {
   let result = rows;
 
   const [rows2] = await pool.query(
-    'SELECT theaterName from theaters where theaterId = ' + req.params.a
+    'SELECT theaterName from theaters where theaterId = ?;',
+    [req.params.a]
   );
   let theaterName = rows2;
 

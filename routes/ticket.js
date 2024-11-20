@@ -4,9 +4,8 @@ const moment = require('moment');
 
 router.get('/', async (req, res) => {
   const [rows] = await pool.query(
-    'SELECT * FROM screeningmovies WHERE screeningMovieId = ' +
-      req.query.screeningId +
-      ';'
+    'SELECT * FROM screeningmovies WHERE screeningMovieId = ?;',
+    [req.query.screeningId]
   );
 
   let result = rows;
@@ -16,20 +15,25 @@ router.get('/', async (req, res) => {
 
   // 이거할 때 booking에서 자리조회해서 예약된건 클릭못하게 하면 될듯.
   const [rows2] = await pool.query(
-    'SELECT * FROM seats WHERE ' +
-      'theaterId = ' +
-      theaterId +
-      ' and hallId = ' +
-      hallId +
-      ' ORDER BY rowChar asc, colNumber asc;'
+    'SELECT * FROM seats WHERE hallId = ? and theaterId = ? ORDER BY rowChar asc, colNumber asc;',
+    [hallId, theaterId]
+  );
+
+  // 이거할 때 booking에서 자리조회 이미 screeningMovies에 hall이랑 theater이 있음. 따로 WHERE안해도 될듯.
+  const [row3] = await pool.query(
+    'SELECT seatId FROM bookings WHERE screeningMovieId = ?',
+    [req.query.screeningId]
   );
   let seats = rows2;
+  let reservedSeats = row3; // 예약된 자리.
   res.render('ticketMovie.ejs', {
     result: result,
     seats: seats,
+    reservedSeats: reservedSeats,
   });
 });
 
+//예약들어왔을 때 이미 예약된 자리인지 체크하는거 만들기.
 router.post('/booking', async (req, res) => {
   const seatsArr = JSON.parse(req.body.seats);
   const usrPhoneNum = req.body.phoneNumber;

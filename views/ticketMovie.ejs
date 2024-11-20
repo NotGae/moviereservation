@@ -39,14 +39,27 @@
   <script>
     let seatsArr = []
     let result = '<%- JSON.stringify(result) %>';
+    let reservedSeats = '<%- JSON.stringify(reservedSeats) %>';
     result = JSON.parse(result);
+    reservedSeats = JSON.parse(reservedSeats);
     screeningMovie = result[0];
 
     const maxNum = 4;
-
+    document.querySelectorAll('.seat').forEach((seat) => {
+      if(reservedSeats.some(item => item.seatId == seat.dataset.seatid)) {
+        seat.style.backgroundColor = 'lightgray';
+      }
+    })
     document.querySelectorAll('.seat').forEach((seat) => {
       seat.addEventListener('click', (e) => {
         const target = e.currentTarget;
+        //만약 좌석이 예약되있으면 클릭X
+        if(reservedSeats.some(item => item.seatId == target.dataset.seatid)) {
+          console.log(reservedSeats);
+          event.preventDefault(); // 기본 동작(링크 이동 등)을 취소
+          event.stopPropagation(); // 이벤트 전파를 막음
+          return;
+        }
         const ticketId = target.dataset.seatid + target.dataset.hallid + target.dataset.theaterid + screeningMovie.screeningMovieId;
         if(target.dataset.checked === 'false') {
           if(maxNum === seatsArr.length) {
