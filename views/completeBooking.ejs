@@ -4,8 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="stylesheet" href="/main.css" />
   </head>
   <body>
-    예약완료창.
+    <%- include('nav.ejs') %>
+    <ul class="ticket_container">
+      <% for(let i = 0; i < tickets.length; i++) { %>
+      <li class="ticket">
+        <p>영화이름: <strong><%= tickets[i].movieInfo.title %></strong></p>
+        <p>상영일: <%= tickets[i].movieInfo.screeningDay %></p>
+        <p>시작시간: <%= tickets[i].movieInfo.startTime %></p>
+        <p>러닝타입: <%= tickets[i].movieInfo.runningTime %></p>
+        <p>극장: <%= tickets[i].theaterName %></p>
+        <p>관: <%= tickets[i].hallName %></p>
+        <p>좌석: <%= tickets[i].seatCode %></p>
+        <p>예약일: <%= tickets[i].date %></p>
+      </li>
+      <%}%>
+    </ul>
   </body>
 </html>

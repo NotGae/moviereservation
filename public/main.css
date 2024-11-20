@@ -90,3 +90,11 @@ ul {
 .user_info {
   display: block;
 }
+
+/* completeBooking */
+.ticket {
+  float: left;
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px;
+}
