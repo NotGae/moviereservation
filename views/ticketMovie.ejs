@@ -56,17 +56,27 @@
           target.style.backgroundColor = 'lightblue';
           // 여기에 서버에서 Date.now()추가하면 될듯.
           //이거 객체로 바꾸기.
-          seatsArr.push(ticketId);
+          seatsArr.push({
+            ticketId: ticketId,
+            screeningMovieId: screeningMovie.screeningMovieId,
+            seatId: target.dataset.seatid,
+            hallId: target.dataset.hallid,
+            theaterId: target.dataset.theaterid
+          });
         } else {
           target.dataset.checked = 'false';
           target.style.backgroundColor = 'white';
-          seatsArr = seatsArr.filter(item => item !== ticketId);
+          seatsArr = seatsArr.filter(item => item.ticketId !== ticketId);
         }
       })
     })
+    //전화번호, 비밀번호 체크 추가하기
     document.querySelector('.submit_btn').addEventListener('click', (e) => {
       if (seatsArr.length === 0) {
         alert("좌석을 선택해주세요!");
+        return;
+      } else if(document.querySelector('#phone_number').value === '' || document.querySelector('#usr_pwd').value === '' || document.querySelector('#usr_pwd').value.length != 4) {
+        alert("전화번호, 비밀번호 4자리 입력해주세요.");
         return;
       } else {
         document.getElementById('seats_arr').value = JSON.stringify(seatsArr);
