@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
   );
   let seats = rows2;
   let reservedSeats = row3; // 예약된 자리.
-  res.render('ticketMovie.ejs', {
+  res.render('bookingMovie.ejs', {
     result: result,
     seats: seats,
     reservedSeats: reservedSeats,
@@ -39,6 +39,13 @@ router.post('/booking', async (req, res) => {
   const usrPhoneNum = req.body.phoneNumber;
   const usrPassword = req.body.pwd;
 
+  // ture면 오류 페이지로
+  if (checkVali(usrPhoneNum, usrPassword)) {
+    res.redirect(
+      `/error?message=${encodeURIComponent('전화번호, 비밀번호 양식 오류')}`
+    );
+    return;
+  }
   const [row] = await pool.query(
     'SELECT userId from users WHERE phoneNumber = ? and password = ?;',
     [usrPhoneNum, usrPassword]
@@ -81,6 +88,7 @@ router.post('/booking', async (req, res) => {
         ]);
       }
       res.redirect(`/error?message=${encodeURIComponent('중복좌석예약')}`);
+      return;
     }
     const [bookingInsertResult] = await pool.query(
       'INSERT INTO bookings(bookingDate, bookingTime, screeningMovieId, userId, seatId, hallId, theaterId) values(CURDATE(), CURTIME(), ?, ?, ?, ?, ?);',
@@ -128,6 +136,15 @@ router.get('/find', (req, res) => {
 router.post('/search', async (req, res) => {
   const usrPhoneNum = req.body.phoneNumber;
   const usrPassword = req.body.pwd;
+
+  // ture면 오류 페이지로
+  if (checkVali(usrPhoneNum, usrPassword)) {
+    res.redirect(
+      `/error?message=${encodeURIComponent('전화번호, 비밀번호 양식 오류')}`
+    );
+    return;
+  }
+
   const [row] = await pool.query(
     'SELECT userId from users WHERE phoneNumber = ? and password = ?;',
     [usrPhoneNum, usrPassword]
@@ -182,4 +199,14 @@ router.post('/search', async (req, res) => {
     res.render('completeBooking.ejs', { tickets: result });
   }
 });
+
+function checkVali(usrPhoneNum, usrPassword) {
+  const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
+  const passwordPattern = /^\d{4}$/;
+
+  if (!phonePattern.test(usrPhoneNum) || !passwordPattern.test(usrPassword))
+    return true;
+
+  return false;
+}
 module.exports = router;

@@ -30,8 +30,8 @@
     </li>
   </ul>
   <form action="/ticket/booking" method="post" class="user_info">
-    <label for="phone_number">전화번호: </label><input type="text" name="phoneNumber" id="phone_number"> <br>
-    <label for="usr_pwd">비밀번호: </label><input type="text" name="pwd" id="usr_pwd"> <br>
+    <label for="phone_number">전화번호: </label><input type="text" name="phoneNumber" id="phone_number" pattern="\d{3}-\d{4}-\d{4}" required > <br>
+    <label for="usr_pwd">비밀번호: </label><input type="text" name="pwd" id="usr_pwd" pattern="\d{4}" required > <br>
     <input type="hidden" style="display: none;" name="seats" id="seats_arr">
     <button type="button" class="submit_btn">예약하기</button> <br>
   </form>
