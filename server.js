@@ -33,3 +33,4 @@ app.get('/', (req, res) => {
 app.use('/list', require('./routes/list.js'));
 app.use('/get', require('./routes/get.js'));
 app.use('/ticket', require('./routes/ticket.js'));
+app.use('/error', require('./routes/error.js'));

@@ -80,7 +80,7 @@ router.post('/booking', async (req, res) => {
           bookingIds[i],
         ]);
       }
-      res.redirect('/ticket');
+      res.redirect(`/error?message=${encodeURIComponent('중복좌석예약')}`);
     }
     const [bookingInsertResult] = await pool.query(
       'INSERT INTO bookings(bookingDate, bookingTime, screeningMovieId, userId, seatId, hallId, theaterId) values(CURDATE(), CURTIME(), ?, ?, ?, ?, ?);',
@@ -171,9 +171,13 @@ router.post('/search', async (req, res) => {
         date: date,
       });
     }
+  } else {
+    res.redirect(`/error?message=${encodeURIComponent('해당 유저 없음.')}`);
+    return;
   }
   if (result.length === 0) {
-    res.redirect('/ticket/find');
+    res.redirect(`/error?message=${encodeURIComponent('예약된 좌석 없음.')}`);
+    return;
   } else {
     res.render('completeBooking.ejs', { tickets: result });
   }
