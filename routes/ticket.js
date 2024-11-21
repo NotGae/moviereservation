@@ -39,7 +39,6 @@ router.post('/booking', async (req, res) => {
   const usrPhoneNum = req.body.phoneNumber;
   const usrPassword = req.body.pwd;
 
-  // 코드 이렇게 바꾸기. sql 인젝션땜에
   const [row] = await pool.query(
     'SELECT userId from users WHERE phoneNumber = ? and password = ?;',
     [usrPhoneNum, usrPassword]
@@ -57,11 +56,33 @@ router.post('/booking', async (req, res) => {
     // 이제 id있음.
     userId = row2[0];
   }
+
+  // 전화번호는 같은데 비밀번호만 다르게 한건 어떻게 처리하지? -> 그냥 가능하게 할까,,, 근데 중복 전화번호에 대한 요구사항을 안정해놨었음.
+  // 애초에 비회원 구매니까 걍 비밀번호만 다르면 다른 회원으로 처리 ㄱㄱ헛
+
   let result = [];
+  let bookingIds = [];
   for (let i = 0; i < seatsArr.length; i++) {
-    // 넣기 전에 먼저 users테이블에서 찾기. 없으면 users테이블에 삽입 후 해당 id 가져오기.
     // bookingId는 그냥 auto incre로 처리
-    await pool.query(
+    const [reservedSeats] = await pool.query(
+      'SELECT * FROM bookings WHERE screeningMovieId = ? and seatId = ? and hallId = ? and theaterId = ?',
+      [
+        seatsArr[i].screeningMovieId,
+        seatsArr[i].seatId,
+        seatsArr[i].hallId,
+        seatsArr[i].theaterId,
+      ]
+    );
+    if (reservedSeats.length != 0) {
+      //이미 자리가 있다는 거니까 작업 취소하면 될듯.
+      for (let i = 0; i < bookingIds.length; i++) {
+        await pool.query('DELETE FROM bookings WHERE bookingId = ?', [
+          bookingIds[i],
+        ]);
+      }
+      res.redirect('/ticket');
+    }
+    const [bookingInsertResult] = await pool.query(
       'INSERT INTO bookings(bookingDate, bookingTime, screeningMovieId, userId, seatId, hallId, theaterId) values(CURDATE(), CURTIME(), ?, ?, ?, ?, ?);',
       [
         seatsArr[i].screeningMovieId,
@@ -71,6 +92,7 @@ router.post('/booking', async (req, res) => {
         seatsArr[i].theaterId,
       ]
     );
+    bookingIds.push(bookingInsertResult.insertId);
     const [theaterName] = await pool.query(
       'SELECT theaterName FROM theaters WHERE theaterId = ?',
       [seatsArr[i].theaterId]
