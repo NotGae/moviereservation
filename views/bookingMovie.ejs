@@ -33,6 +33,7 @@
     <label for="phone_number">전화번호: </label><input type="text" name="phoneNumber" id="phone_number" pattern="\d{3}-\d{4}-\d{4}" required > <br>
     <label for="usr_pwd">비밀번호: </label><input type="text" name="pwd" id="usr_pwd" pattern="\d{4}" required > <br>
     <input type="hidden" style="display: none;" name="seats" id="seats_arr">
+    <input type="hidden" style="display: none;" name="screeningMovieId" id="screening_movie_id">
     <button type="button" class="submit_btn">예약하기</button> <br>
   </form>
   </body>
@@ -71,7 +72,6 @@
           //이거 객체로 바꾸기.
           seatsArr.push({
             ticketId: ticketId,
-            screeningMovieId: screeningMovie.screeningMovieId,
             seatId: target.dataset.seatid,
             hallId: target.dataset.hallid,
             theaterId: target.dataset.theaterid
@@ -93,6 +93,7 @@
         return;
       } else {
         document.getElementById('seats_arr').value = JSON.stringify(seatsArr);
+        document.getElementById('screening_movie_id').value = screeningMovie.screeningMovieId;
       }
 
       document.querySelector('.user_info').submit();

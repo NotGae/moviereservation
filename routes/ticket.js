@@ -33,9 +33,9 @@ router.get('/', async (req, res) => {
   });
 });
 
-//예약들어왔을 때 이미 예약된 자리인지 체크하는거 만들기.
 router.post('/booking', async (req, res) => {
   const seatsArr = JSON.parse(req.body.seats);
+  const screeningMovieId = req.body.screeningMovieId;
   const usrPhoneNum = req.body.phoneNumber;
   const usrPassword = req.body.pwd;
 
@@ -46,11 +46,13 @@ router.post('/booking', async (req, res) => {
     );
     return;
   }
+  // 입력받은 전화번호, 비밀번호가 이미 users테이블에 존재하는지.
   const [row] = await pool.query(
     'SELECT userId from users WHERE phoneNumber = ? and password = ?;',
     [usrPhoneNum, usrPassword]
   );
   let userId = row[0];
+  // 없으면 유저정보를 insert
   if (userId === undefined) {
     await pool.query('INSERT INTO users(phoneNumber, password) values(?, ?);', [
       usrPhoneNum,
@@ -69,12 +71,23 @@ router.post('/booking', async (req, res) => {
 
   let result = [];
   let bookingIds = [];
+  // 예약하기 전에 예약할려는 좌석이 screeningmovie가 상영되고 있는 관의 좌석이 맞는지 체크
+  const [screeningMovieInfo] = await pool.query(
+    'SELECT hallId, theaterId from screeningmovies WHERE screeningMovieId = ?',
+    [screeningMovieId]
+  );
+  if (screeningMovieInfo === undefined) {
+    res.redirect(
+      `/error?message=${encodeURIComponent('상영영화가 존재하지 않습니다.')}`
+    );
+    return;
+  }
   for (let i = 0; i < seatsArr.length; i++) {
-    // bookingId는 그냥 auto incre로 처리
+    // bookingId는 그냥 auto incre로 처리. bookings테이블에서 예약할려는 상영영화의 자리가 이미 예약되어있는지 체크,
     const [reservedSeats] = await pool.query(
       'SELECT * FROM bookings WHERE screeningMovieId = ? and seatId = ? and hallId = ? and theaterId = ?',
       [
-        seatsArr[i].screeningMovieId,
+        screeningMovieId,
         seatsArr[i].seatId,
         seatsArr[i].hallId,
         seatsArr[i].theaterId,
@@ -90,10 +103,28 @@ router.post('/booking', async (req, res) => {
       res.redirect(`/error?message=${encodeURIComponent('중복좌석예약')}`);
       return;
     }
+    if (
+      screeningMovieInfo.rowChar !== seatsArr[i].hallId ||
+      screeningMovieInfo.theaterId !== seatsArr[i].theaterId
+    ) {
+      // 상영하는 영화의 영화관,hall이랑 좌석의 영화관,hall이 다르면 잘못예매되는 것이니까.
+      for (let i = 0; i < bookingIds.length; i++) {
+        await pool.query('DELETE FROM bookings WHERE bookingId = ?', [
+          bookingIds[i],
+        ]);
+      }
+      res.redirect(
+        `/error?message=${encodeURIComponent(
+          '잘못된 영화관, 관의 좌석을 예약'
+        )}`
+      );
+      return;
+    }
+    // 예약하기.
     const [bookingInsertResult] = await pool.query(
       'INSERT INTO bookings(bookingDate, bookingTime, screeningMovieId, userId, seatId, hallId, theaterId) values(CURDATE(), CURTIME(), ?, ?, ?, ?, ?);',
       [
-        seatsArr[i].screeningMovieId,
+        screeningMovieId,
         userId.userId,
         seatsArr[i].seatId,
         seatsArr[i].hallId,
