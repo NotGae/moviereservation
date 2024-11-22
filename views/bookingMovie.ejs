@@ -5,37 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/main.css" />
+    <style>
+      main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .movieDisplaySection {
+        width: 500px;
+        height: 300px;
+        line-height: 300px;
+        text-align: center;
+        background-color: lightgray;
+      }
+    </style>
   </head>
   <body>
     <%- include('nav.ejs') %>
-    <ul class="seat_container">
-      <% let prevRowChar = ''; %> <% for(let i = 0; i < seats.length; i++) { %>
-      <% if (seats[i].rowChar !== prevRowChar) { %> <% if (i !== 0) { %>
-    </ul>
-    <% } %>
-    <li class="seat_row">
-      <ul class="seats">
-        <% prevRowChar = seats[i].rowChar; %> <% } %>
-        <li
-          class="seat"
-          data-checked="false"
-          data-seatid="<%= seats[i].seatId %>"
-          data-hallid="<%=seats[i].hallId %>"
-          data-theaterId="<%=seats[i].theaterId %>"
-        >
-          <%= seats[i].rowChar %><%= seats[i].colNumber %>
-        </li>
-        <% } %>
+    <main>
+      <section class="movieDisplaySection">
+        정면
+      </section>
+      <ul class="seat_container">
+        <% let prevRowChar = ''; %> <% for(let i = 0; i < seats.length; i++) { %>
+        <% if (seats[i].rowChar !== prevRowChar) { %> <% if (i !== 0) { %>
       </ul>
-    </li>
-  </ul>
-  <form action="/ticket/booking" method="post" class="user_info">
-    <label for="phone_number">전화번호: </label><input type="text" name="phoneNumber" id="phone_number" pattern="\d{3}-\d{4}-\d{4}" required > <br>
-    <label for="usr_pwd">비밀번호: </label><input type="text" name="pwd" id="usr_pwd" pattern="\d{4}" required > <br>
-    <input type="hidden" style="display: none;" name="seats" id="seats_arr">
-    <input type="hidden" style="display: none;" name="screeningMovieId" id="screening_movie_id">
-    <button type="button" class="submit_btn">예약하기</button> <br>
-  </form>
+      <% } %>
+      <li class="seat_row">
+        <ul class="seats">
+          <% prevRowChar = seats[i].rowChar; %> <% } %>
+          <li
+            class="seat"
+            data-checked="false"
+            data-seatid="<%= seats[i].seatId %>"
+            data-hallid="<%=seats[i].hallId %>"
+            data-theaterId="<%=seats[i].theaterId %>"
+          >
+            <%= seats[i].rowChar %><%= seats[i].colNumber %>
+          </li>
+          <% } %>
+        </ul>
+      </li>
+    </ul>
+    <form action="/ticket/booking" method="post" class="user_info">
+      <label for="phone_number">전화번호: </label><input type="text" name="phoneNumber" id="phone_number" pattern="\d{3}-\d{4}-\d{4}" required > <br>
+      <label for="usr_pwd">비밀번호: </label><input type="text" name="pwd" id="usr_pwd" pattern="\d{4}" required > <br>
+      <input type="hidden" style="display: none;" name="seats" id="seats_arr">
+      <input type="hidden" style="display: none;" name="screeningMovieId" id="screening_movie_id">
+      <button type="button" class="submit_btn">예약하기</button> <br>
+    </form>
+  </main>
   </body>
   <script>
     let seatsArr = []
@@ -56,7 +75,6 @@
         const target = e.currentTarget;
         //만약 좌석이 예약되있으면 클릭X
         if(reservedSeats.some(item => item.seatId == target.dataset.seatid)) {
-          console.log(reservedSeats);
           event.preventDefault(); // 기본 동작(링크 이동 등)을 취소
           event.stopPropagation(); // 이벤트 전파를 막음
           return;

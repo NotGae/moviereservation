@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 
   // 이거할 때 booking에서 자리조회 이미 screeningMovies에 hall이랑 theater이 있음. 따로 WHERE안해도 될듯.
   const [row3] = await pool.query(
-    'SELECT seatId FROM bookings WHERE screeningMovieId = ?',
+    'SELECT seatId, hallId, theaterId FROM bookings WHERE screeningMovieId = ?',
     [req.query.screeningId]
   );
   let seats = rows2;
@@ -68,7 +68,6 @@ router.post('/booking', async (req, res) => {
 
   // 전화번호는 같은데 비밀번호만 다르게 한건 어떻게 처리하지? -> 그냥 가능하게 할까,,, 근데 중복 전화번호에 대한 요구사항을 안정해놨었음.
   // 애초에 비회원 구매니까 걍 비밀번호만 다르면 다른 회원으로 처리 ㄱㄱ헛
-
   let result = [];
   let bookingIds = [];
   // 예약하기 전에 예약할려는 좌석이 screeningmovie가 상영되고 있는 관의 좌석이 맞는지 체크
@@ -104,8 +103,8 @@ router.post('/booking', async (req, res) => {
       return;
     }
     if (
-      screeningMovieInfo.rowChar !== seatsArr[i].hallId ||
-      screeningMovieInfo.theaterId !== seatsArr[i].theaterId
+      screeningMovieInfo[0].hallId != seatsArr[i].hallId ||
+      screeningMovieInfo[0].theaterId != seatsArr[i].theaterId
     ) {
       // 상영하는 영화의 영화관,hall이랑 좌석의 영화관,hall이 다르면 잘못예매되는 것이니까.
       for (let i = 0; i < bookingIds.length; i++) {
@@ -146,7 +145,7 @@ router.post('/booking', async (req, res) => {
     );
     const [movieInfo] = await pool.query(
       'SELECT DISTINCT b.title as title, a.startTime as startTime, DATE_FORMAT(a.screeningDay, "%Y년 %m월 %d일") as screeningDay, b.runningTime as runningTime FROM screeningmovies a JOIN movies b ON a.movieId = b.movieId WHERE a.screeningMovieId = ?;',
-      [seatsArr[0].screeningMovieId]
+      [screeningMovieId]
     );
     result.push({
       movieInfo: movieInfo[0],
