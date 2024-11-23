@@ -6,7 +6,72 @@
     <title>Document</title>
     <link rel="stylesheet" href="/main.css" />
   </head>
+
   <body>
     <%- include('nav.ejs') %>
+    <div class="box">
+      <h2>인기 영화</h2>
+      <% for(let i = 0; i < popularMovies.length; i++) { %>
+      <a href="/list/movie">
+        <% if(i == 0) { %>
+        <img
+          id="movie<%=i + 1%>"
+          src="<%= popularMovies[i].poster %>"
+          alt="Movie <%=i + 1%>"
+          style="display: block"
+        />
+        <% } else { %>
+        <img
+          id="movie<%=i + 1%>"
+          src="<%= popularMovies[i].poster %>"
+          alt="Movie <%=i + 1%>"
+          style="display: none; opacity: 0"
+        />
+        <%}%>
+      </a>
+      <% } %>
+    </div>
+    <h3>상영중인 영화</h3>
+    <div class="box2">
+      <% for(let i = 0; i < screeningMoviePosters.length; i++) { %>
+      <a href="/list/movie">
+        <img
+          src="<%= screeningMoviePosters[i].poster %>"
+          alt="Movie <%= i + 1 %>"
+        />
+      </a>
+      <%}%>
+    </div>
   </body>
+  <script>
+    let currentImage = 1;
+
+    setInterval(() => {
+      if (currentImage === 1) {
+        document.getElementById('movie1').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('movie1').style.display = 'none';
+          document.getElementById('movie2').style.display = 'block';
+          document.getElementById('movie2').style.opacity = '1';
+        }, 1000);
+        currentImage = 2;
+      } else if (currentImage === 2) {
+        document.getElementById('movie2').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('movie2').style.display = 'none';
+          document.getElementById('movie3').style.display = 'block';
+          document.getElementById('movie3').style.opacity = '1';
+        }, 1000);
+        currentImage = 3;
+      } else if (currentImage === 3) {
+        document.getElementById('movie3').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('movie3').style.display = 'none';
+          document.getElementById('movie1').style.display = 'block';
+          document.getElementById('movie1').style.opacity = '1';
+        }, 1000);
+        currentImage = 1;
+      }
+    }, 4000); // 5초마다 이미지 변경
+  </script>
 </html>

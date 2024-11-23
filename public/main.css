@@ -4,6 +4,13 @@
   font-size: 24px;
   margin-right: 10px;
 }
+h1,
+h2,
+h3 {
+  color: white;
+  top: 50px;
+  left: 50px;
+}
 ul {
   display: inline-block;
   vertical-align: top;
@@ -12,13 +19,117 @@ ul {
   padding: 0;
   padding-right: 10px;
 }
+header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #3d2864;
+  color: white;
+}
+
+body {
+  background-color: #1a1429;
+  color: black;
+  font-family: 'Arial', sans-serif;
+}
+
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 50px;
+  background-color: #e4e4e4;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+}
+
+.sidebar a {
+  display: block;
+  color: #333;
+  text-decoration: none;
+  padding: 10px;
+  margin-bottom: 5px;
+}
+
+.sidebar a:hover {
+  background-color: #ddd;
+  color: #000;
+}
+
+img {
+  width: 300px;
+  height: 400px;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+  object-fit: cover;
+}
+
+#image2 {
+  margin-left: 20px;
+  width: 100px;
+  height: 100px;
+  padding-top: 20px; /* 위쪽 여백 */
+}
+
+#image2 img {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+}
+
+.box {
+  width: 500px;
+  height: 470px;
+}
+
+.box img {
+  position: absolute;
+}
+
+.box2 {
+  display: flex;
+  width: 1000px;
+  height: 450px;
+}
+/*listMovie.ejs*/
+.screening_movie,
+.about,
+.movie_info p {
+  color: white;
+  border: 1px solid white;
+}
+
+.screening_movie_container li {
+  border: 1px solid white;
+}
+
+.about {
+  color: white;
+  border: 1px solid white;
+  padding: 5px;
+}
+
+.theater {
+  font-weight: bold;
+  background: linear-gradient(to right, red, orange, yellow, green, violet);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.theater:hover {
+  color: #ff5733;
+}
+
 /* listArea.ejs css */
 .province_container,
 .city_container,
 .theater_container {
   display: inline-block;
   margin-bottom: 10px;
-  border: 1px solid black;
+  border: 1px solid rgb(255, 255, 255);
   height: auto;
   width: 80px;
 }
@@ -37,20 +148,21 @@ ul {
   display: inline;
   padding: 0;
   margin: 0;
+  color: white;
 }
 /* listMovie.ejs */
 .screening_movie_container li {
-  border: 1px solid black;
+  border: 1px solid rgb(255, 255, 255);
 }
 .screening_movie {
-  border: 1px solid black;
+  border: 1px solid rgb(255, 255, 255);
   margin: 0;
   padding: 0;
   display: inline-block;
   width: auto;
 }
 .about {
-  border: 1px solid black;
+  border: 1px solid rgb(255, 255, 255);
   margin: 0;
   width: 60px;
   padding: 0;
@@ -62,11 +174,12 @@ ul {
   cursor: pointer;
 }
 /* listScreeningMovie.ejs css */
+
 .movie_date li,
 .hall {
   display: inline-block;
   margin-right: 10px;
-  border: 1px solid black;
+  border: 1px solid rgb(255, 255, 255);
 }
 .hall {
   padding: 10px;
@@ -74,6 +187,10 @@ ul {
 .movie_date li:hover {
   cursor: pointer;
   background-color: aqua;
+}
+
+.movie_date li {
+  color: white;
 }
 
 /* ticketMovie.ejs */
@@ -94,7 +211,150 @@ ul {
 /* completeBooking */
 .ticket {
   float: left;
-  border: 1px solid black;
+  border: 1px solid rgb(255, 255, 255);
   margin: 10px;
   padding: 10px;
+}
+
+.ticket_container {
+  color: white;
+}
+
+.ticket strong {
+  color: white;
+}
+
+/*bookingMovie*/
+label {
+  color: white;
+}
+
+.screen {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.screen-img {
+  width: 80%;
+  max-width: 600px;
+  height: auto;
+}
+
+/*menu bar*/
+
+html.open {
+  overflow: hidden;
+}
+
+#menu.open {
+  right: 0px;
+  left: auto;
+}
+
+.page_cover.open {
+  display: block;
+}
+
+.btn {
+  width: 150px;
+  height: 50px;
+  position: absolute;
+  background-image: url('/images/hamburger.png');
+  background-size: 30%;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  z-index: 1;
+  right: 0px;
+}
+
+.close {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  background-image: url('/images/x.png');
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+#menu {
+  width: 150px;
+  height: 100%;
+  position: fixed;
+  top: 0px;
+  right: -202px;
+  z-index: 10;
+  border: 1px solid #c9c9c9;
+  background-color: rgb(225, 222, 231);
+  text-align: center;
+  font-weight: bold;
+  transition: All 0.2s ease;
+  -webkit-transition: All 0.2s ease;
+  -moz-transition: All 0.2s ease;
+  -o-transition: All 0.2s ease;
+  padding-top: 50px;
+  padding-left: 0px;
+  padding-right: 40px;
+}
+
+#menu a {
+  padding: 0;
+  text-decoration: none;
+  font-size: 18px;
+  color: #262130;
+  display: block;
+  transition: 0.3s;
+}
+
+#menu.open {
+  right: 0px;
+}
+
+.page_cover.open {
+  display: block;
+}
+
+.page_cover {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 4;
+  display: none;
+}
+
+#menu ul {
+  width: 190px;
+  margin: 0;
+  padding: 0;
+}
+
+#menu ul.nav li {
+  position: relative;
+  float: left;
+  width: 100%;
+  list-style-type: none;
+  font-size: 18px;
+}
+
+#menu ul.nav li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 50px;
+  text-indent: 20px;
+  text-align: left;
+  color: #262130;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+#menu ul.nav li a:hover {
+  background: #eee;
 }

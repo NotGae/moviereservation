@@ -26,8 +26,22 @@ pool
     console.log('DB연결 실패: ', err);
   });
 
-app.get('/', (req, res) => {
-  res.render('main.ejs');
+app.get('/', async (req, res) => {
+  // 여기서 인기영화, 상영중인 영화 sql문 작성 후 넘겨주기.
+  const [rows] = await pool.query(
+    'SELECT m.movieId as movieId, m.title as title, m.poster as poster, COUNT(*) as bookingCnt FROM bookings b JOIN screeningMovies sm ON b.screeningMovieId = sm.screeningMovieId JOIN movies m ON sm.movieId = m.movieId GROUP BY m.movieId ORDER BY COUNT(*) desc LIMIT 3;'
+  );
+  const [row2] = await pool.query(
+    'SELECT DISTINCT b.movieId as movieId, b.poster as poster ' +
+      'FROM screeningmovies a JOIN movies b ON a.movieId = b.movieId ' +
+      'WHERE a.screeningDay BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY);'
+  );
+  let popularMovies = rows;
+  let screeningMoviePosters = row2;
+  res.render('main.ejs', {
+    popularMovies: popularMovies,
+    screeningMoviePosters: screeningMoviePosters,
+  });
 });
 
 app.use('/list', require('./routes/list.js'));

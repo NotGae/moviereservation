@@ -7,13 +7,17 @@
   </head>
   <body>
     <%- include('nav.ejs') %>
+
     <h1>고를 수 있는 영화들</h1>
     <ul class="screening_movie_container">
       <% for(let i = 0; i < result.length; i++) { %>
-      <li>
-        <h3 class="screening_movie" data-movieid="<%= result[i].movieId %>">
-          <%= result[i].title %>
-        </h3>
+      <li class="screening_movie" data-movieid="<%= result[i].movieId %>">
+        <h3><%= result[i].title %></h3>
+        <img
+          src="<%= result[i].poster %>"
+          alt="Movie Image"
+          class="movie-image"
+        />
         <p class="about">더보기</p>
         <section style="display: none" class="movie_info">
           <p>제목: <%= result[i].title %></p>
@@ -28,7 +32,7 @@
   <script>
     document.querySelectorAll('.screening_movie').forEach((movie) => {
       movie.addEventListener('click', (e) => {
-        const MOVIEID = e.target.dataset.movieid;
+        const MOVIEID = e.currentTarget.dataset.movieid;
         // 여기도 보여주는데 예매하기 버튼은 없애고 극장 선택누르면 될듯, 해당 movieId넘기고. screeningMovie에서 movieId에 맞는 theaterId로 극장들 리스트 보여주기...
         fetch(`/get/parentTheater?movieId=${MOVIEID}`, {
           method: 'GET',
@@ -49,7 +53,7 @@
                 `
                   <li>
                   <section class="theater_container">
-                  <a href="/list/movie/${theater.theaterId}?movieId=${MOVIEID}" class="theater" data-id=${theater.theaterId}> ${theater.theaterName}</a>
+                  <a href="/list/movie/${theater.theaterId}?movieId=${MOVIEID}" class="theater" data-id=${theater.theaterId}>${theater.theaterName}</a>
                   </section>
                   </li>
                   `
@@ -59,6 +63,7 @@
           });
       });
     });
+
     document.querySelectorAll('.about').forEach((about) => {
       about.addEventListener('click', (e) => {
         const movieInfo = e.target.nextElementSibling;

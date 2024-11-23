@@ -5,16 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/main.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
   </head>
+  
   <body>
-    <nav>
-      <ul id="nav_ul">
-        <li><a href="/">홈</a></li>
-        <li><a href="/list/movie">영화별</a></li>
-        <li><a href="/list/area">지역별</a></li>
-        <li><a href="/ticket/find">티켓찾기</a></li>
-      </ul>
-    </nav>
-    <hr />
+    <header>
+
+    <h1 class="site-title">Movie Reservation </h1>
+    <div id="image2">
+      <img src="/images/icon.png">
+    </div>
+    <div class="btn"></div>
+
+    </header>
+   
+
+   
+    <div onclick="history.back();" class="page_cover"></div>
+
+    <div id="menu">
+      <ul class="nav">
+        <li></li>
+        <li><a href="/" data-content="홈 화면 내용">홈</a></li>
+        <li><a href="/list/movie" data-content="영화별 화면 내용">영화</a></li>
+        <li><a href="/list/area" data-content="지역별 화면 내용">지역</a></li>
+        <li><a href="/ticket/find" data-content="티켓찾기 화면 내용">티켓찾기</a></li>
+        </li>
+        </ul>
+    <div onclick="history.back();" class="close"></div>
+    </div>
+
   </body>
+
+  <script>
+    $(document).ready(function() {
+    $(".btn").click(function() {
+      $("#menu,.page_cover,html").addClass("open");
+      window.location.hash = "#open";
+    })
+    })
+
+    window.onhashchange = function() {
+      if (location.hash != "#open") {
+        $("#menu,.page_cover,html").removeClass("open");
+      }
+    };
+
+    $(document).ready(function(){
+    $("#menu ul.sub_mobile").hide();
+    $("#menu ul.nav li").click(function(){
+    $("ul",this).slideToggle("fast");
+    })
+    })
+  </script>
+
 </html>

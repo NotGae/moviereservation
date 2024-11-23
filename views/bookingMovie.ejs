@@ -5,27 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="/main.css" />
-    <style>
-      main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-      .movieDisplaySection {
-        width: 500px;
-        height: 300px;
-        line-height: 300px;
-        text-align: center;
-        background-color: lightgray;
-      }
-    </style>
   </head>
   <body>
     <%- include('nav.ejs') %>
-    <main>
-      <section class="movieDisplaySection">
-        정면
-      </section>
+    <div class="screen">
+      <img src="/images/screen.png" alt="Screen" class="screen-img">
+    </div>
+    <div class="screen">
       <ul class="seat_container">
         <% let prevRowChar = ''; %> <% for(let i = 0; i < seats.length; i++) { %>
         <% if (seats[i].rowChar !== prevRowChar) { %> <% if (i !== 0) { %>
@@ -54,7 +40,6 @@
       <input type="hidden" style="display: none;" name="screeningMovieId" id="screening_movie_id">
       <button type="button" class="submit_btn">예약하기</button> <br>
     </form>
-  </main>
   </body>
   <script>
     let seatsArr = []
@@ -96,7 +81,7 @@
           });
         } else {
           target.dataset.checked = 'false';
-          target.style.backgroundColor = 'white';
+          target.style.backgroundColor = getComputedStyle(document.querySelector('body')).backgroundColor;;
           seatsArr = seatsArr.filter(item => item.ticketId !== ticketId);
         }
       })

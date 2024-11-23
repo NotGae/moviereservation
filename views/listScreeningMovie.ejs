@@ -9,7 +9,7 @@
   <body>
     <%- include('nav.ejs') %>
     <h1><%= theaterName %>에서 상영중인 영화</h1>
-    <h2></h2>
+
     <ul style="display: block" class="movie_date"></ul>
 
     <ul classs="screening_movie_container">
@@ -17,7 +17,7 @@
       <li
         class="screening_movie"
         data-screeningDay="<%= result[i].screeningDay %>"
-        style="display: none"
+        style="display: none; color: white !important"
       >
         <form action="/ticket" method="GET">
           <h3><%= result[i].title %></h3>

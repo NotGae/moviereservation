@@ -20,7 +20,7 @@ router.get('/movie', async (req, res) => {
   // 여기서도 현재날짜 + 몇일까지 영화만 뽑기.
   const [rows] = await pool.query(
     'SELECT DISTINCT b.movieId as movieId, b.title as title, b.synopsis as synopsis, ' +
-      'DATE_FORMAT(b.releaseDate, "%Y년 %m월 %d일") as releaseDate, b.runningTime as runningTime ' +
+      'DATE_FORMAT(b.releaseDate, "%Y년 %m월 %d일") as releaseDate, b.runningTime as runningTime, b.poster as poster ' +
       'FROM screeningmovies a JOIN movies b ON a.movieId = b.movieId ' +
       'WHERE a.screeningDay BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY);'
   );
