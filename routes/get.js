@@ -20,7 +20,7 @@ router.get('/theater', async (req, res) => {
 router.get('/parentTheater', async (req, res) => {
   const MOVIEID = req.query.movieId;
   let q =
-    'SELECT DISTINCT b.theaterId as theaterId, b.theaterName as theaterName, b.city as city, b.province as province FROM screeningmovies a JOIN theaters b ON a.theaterId = b.theaterId WHERE a.movieId = ?';
+    'SELECT DISTINCT b.theaterId as theaterId, b.theaterName as theaterName, b.city as city, b.province as province FROM screeningmovies a JOIN theaters b ON a.theaterId = b.theaterId WHERE a.movieId = ? AND a.screeningDay BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)';
 
   const [rows] = await pool.query(q, [MOVIEID]);
   const result = rows;
