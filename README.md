@@ -20,3 +20,5 @@ error.ejs : 에러화면
 
 server.js -> 서버
 database.js -> 데이터베이스
+
+https://github.com/NotGae/moviereservation
